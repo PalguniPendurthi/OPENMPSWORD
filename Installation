@@ -1,1 +1,206 @@
 This is the installation procedure followed for sword.
+SWORD-
+For installing SWORD we need prerequisites as below:
+Clang/LLVM version >= 6.0
+CMake version >= 3.4.3
+GLPK version >= 4.61
+Boost Libraries version >= 1.58
+So we started with checking our host machine for the aforementioned prerequisites. Clang/LLVM version was already found to be pre-installed on MAC OS:
+pavanik@Pavanis-MacBook-Pro ~ % clang --version
+Apple clang version 14.0.0 (clang-1400.0.29.202)
+Target: arm64-apple-darwin22.3.0
+Thread model: posix
+InstalledDir: /Library/Developer/CommandLineTools/usr/bin
+Then we started with installing cmake. The latest available version for cmake is 3.26 as also given in the cmake official documentation but the SWORD suggests it to be >= 3.4.3 which needs to be tried and tested at this point. On local MAC machine we already has version 3.25.3 using homebrew.
+https://cmake.org/download/
+pavanik@Pavanis-MacBook-Pro build % cmake --version
+cmake version 3.25.3
+Next, GLPK is installed from the official documentation link https://www.gnu.org/software/glpk/
+pavanik@Pavanis-MacBook-Pro SwordBuild % gpg --verify glpk-4.65.tar.gz.sig                  
+gpg: assuming signed data in 'glpk-4.65.tar.gz'
+gpg: Signature made Fri Feb 16 02:05:24 2018 MST
+gpg:                using DSA key D17BF2305981E818
+gpg: Good signature from "Andrew Makhorin <mao@mai2.rcnet.ru>" [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: A2B5 6CCB 4222 0C06 4813  35BA D17B F230 5981 E818
+run code snippetVisit Manage Class to disable runnable code snippets×
+Then Boost Libraries version 1.81.0 is installed from the given source. Since these are just the libraries, we have put them inside the Sword project directory as it is ambiguous from the SWROD documentation regarding the path of these Boost Library files.
+pavanik@Pavanis-MacBook-Pro SwordBuild % cd boost_1_81_0
+pavanik@Pavanis-MacBook-Pro boost_1_81_0 % ls
+INSTALL		LICENSE_1_0.txt	boost		boost.css	boostcpp.jam	bootstrap.sh	index.htm	libs		rst.css		tools
+Jamroot		README.md	boost-build.jam	boost.png	bootstrap.bat	doc		index.html	more		status
+pavanik@Pavanis-MacBook-Pro boost_1_81_0 %  
+https://boostorg.jfrog.io/artifactory/main/release/1.81.0/source/
+Last past of the pre-requisites is to have a Ninja build system post which we can go ahead with the SWORD installation. For that, we cloned the Ninja git repo and executed the binaries.
+https://github.com/ninja-build/ninja
+pavanik@Pavanis-MacBook-Pro SwordBuild % git clone <a target="_blank" href="https://github.com/ninja-build/ninja" rel="noopener noreferrer">https://github.com/ninja-build/ninja</a>
+Cloning into 'ninja'...
+remote: Enumerating objects: 12051, done.
+remote: Counting objects: 100% (31/31), done.
+remote: Compressing objects: 100% (25/25), done.
+remote: Total 12051 (delta 8), reused 18 (delta 4), pack-reused 12020
+Receiving objects: 100% (12051/12051), 4.44 MiB | 8.53 MiB/s, done.
+Resolving deltas: 100% (8494/8494), done.
+pavanik@Pavanis-MacBook-Pro SwordBuild % ls
+boost_1_81_0		boost_1_81_0.tar.gz	glpk-4.65.tar.gz	glpk-4.65.tar.gz.sig	ninja			openmp
+pavanik@Pavanis-MacBook-Pro SwordBuild % cd ninja 
+pavanik@Pavanis-MacBook-Pro ninja % ls
+CMakeLists.txt	CONTRIBUTING.md	COPYING		README.md	RELEASING.md	appveyor.yml	configure.py	doc		misc		src		windows
+pavanik@Pavanis-MacBook-Pro ninja % ./configure.py --bootstrap
+/Users/pavanik/Desktop/SV/SwordBuild/ninja/./configure.py:24: DeprecationWarning: 'pipes' is deprecated and slated for removal in Python 3.13
+  import pipes
+bootstrapping ninja...
+warning: A compatible version of re2c (>= 0.15.3) was not found; changes to src/*.in.cc will not affect your build.
+wrote build.ninja.
+bootstrap complete.  rebuilding...
+[32/32] LINK ninja
+pavanik@Pavanis-MacBook-Pro ninja % 
+pavanik@Pavanis-MacBook-Pro ninja % 
+pavanik@Pavanis-MacBook-Pro ninja % ls
+CMakeLists.txt	COPYING		RELEASING.md	build		configure.py	misc		src
+CONTRIBUTING.md	README.md	appveyor.yml	build.ninja	doc		ninja		windows
+pavanik@Pavanis-MacBook-Pro ninja % cmake -Bbuild-cmake
+-- The CXX compiler identification is AppleClang 14.0.0.14000029
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- IPO / LTO enabled
+-- Performing Test flag_no_deprecated
+-- Performing Test flag_no_deprecated - Success
+-- Performing Test flag_color_diag
+-- Performing Test flag_color_diag - Success
+CMake Warning at CMakeLists.txt:53 (message):
+  re2c was not found; changes to src/*.in.cc will not affect your build.
+
+
+-- Looking for fork
+-- Looking for fork - found
+-- Looking for pipe
+-- Looking for pipe - found
+-- Configuring done (1.4s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/pavanik/Desktop/SV/SwordBuild/ninja/build-cmake
+pavanik@Pavanis-MacBook-Pro ninja % cmake --build build-cmake
+[  1%] Building CXX object CMakeFiles/libninja-re2c.dir/src/depfile_parser.cc.o
+[  3%] Building CXX object CMakeFiles/libninja-re2c.dir/src/lexer.cc.o
+[  3%] Built target libninja-re2c
+[  4%] Building CXX object CMakeFiles/libninja.dir/src/build_log.cc.o
+[  6%] Building CXX object CMakeFiles/libninja.dir/src/build.cc.o
+[  7%] Building CXX object CMakeFiles/libninja.dir/src/clean.cc.o
+[  9%] Building CXX object CMakeFiles/libninja.dir/src/clparser.cc.o
+[ 10%] Building CXX object CMakeFiles/libninja.dir/src/dyndep.cc.o
+[ 12%] Building CXX object CMakeFiles/libninja.dir/src/dyndep_parser.cc.o
+[ 14%] Building CXX object CMakeFiles/libninja.dir/src/debug_flags.cc.o
+[ 15%] Building CXX object CMakeFiles/libninja.dir/src/deps_log.cc.o
+[ 17%] Building CXX object CMakeFiles/libninja.dir/src/disk_interface.cc.o
+[ 18%] Building CXX object CMakeFiles/libninja.dir/src/edit_distance.cc.o
+[ 20%] Building CXX object CMakeFiles/libninja.dir/src/eval_env.cc.o
+[ 21%] Building CXX object CMakeFiles/libninja.dir/src/graph.cc.o
+[ 23%] Building CXX object CMakeFiles/libninja.dir/src/graphviz.cc.o
+[ 25%] Building CXX object CMakeFiles/libninja.dir/src/json.cc.o
+[ 26%] Building CXX object CMakeFiles/libninja.dir/src/line_printer.cc.o
+[ 28%] Building CXX object CMakeFiles/libninja.dir/src/manifest_parser.cc.o
+[ 29%] Building CXX object CMakeFiles/libninja.dir/src/metrics.cc.o
+[ 31%] Building CXX object CMakeFiles/libninja.dir/src/missing_deps.cc.o
+[ 32%] Building CXX object CMakeFiles/libninja.dir/src/parser.cc.o
+[ 34%] Building CXX object CMakeFiles/libninja.dir/src/state.cc.o
+[ 35%] Building CXX object CMakeFiles/libninja.dir/src/status.cc.o
+[ 37%] Building CXX object CMakeFiles/libninja.dir/src/string_piece_util.cc.o
+[ 39%] Building CXX object CMakeFiles/libninja.dir/src/util.cc.o
+[ 40%] Building CXX object CMakeFiles/libninja.dir/src/version.cc.o
+[ 42%] Building CXX object CMakeFiles/libninja.dir/src/subprocess-posix.cc.o
+[ 42%] Built target libninja
+[ 43%] Generating build/browse_py.h
+[ 45%] Building CXX object CMakeFiles/ninja.dir/src/ninja.cc.o
+[ 46%] Building CXX object CMakeFiles/ninja.dir/src/browse.cc.o
+[ 48%] Linking CXX executable ninja
+[ 48%] Built target ninja
+[ 50%] Building CXX object CMakeFiles/ninja_test.dir/src/build_log_test.cc.o
+[ 51%] Building CXX object CMakeFiles/ninja_test.dir/src/build_test.cc.o
+[ 53%] Building CXX object CMakeFiles/ninja_test.dir/src/clean_test.cc.o
+[ 54%] Building CXX object CMakeFiles/ninja_test.dir/src/clparser_test.cc.o
+[ 56%] Building CXX object CMakeFiles/ninja_test.dir/src/depfile_parser_test.cc.o
+[ 57%] Building CXX object CMakeFiles/ninja_test.dir/src/deps_log_test.cc.o
+[ 59%] Building CXX object CMakeFiles/ninja_test.dir/src/disk_interface_test.cc.o
+[ 60%] Building CXX object CMakeFiles/ninja_test.dir/src/dyndep_parser_test.cc.o
+[ 62%] Building CXX object CMakeFiles/ninja_test.dir/src/edit_distance_test.cc.o
+[ 64%] Building CXX object CMakeFiles/ninja_test.dir/src/graph_test.cc.o
+[ 65%] Building CXX object CMakeFiles/ninja_test.dir/src/json_test.cc.o
+[ 67%] Building CXX object CMakeFiles/ninja_test.dir/src/lexer_test.cc.o
+[ 68%] Building CXX object CMakeFiles/ninja_test.dir/src/manifest_parser_test.cc.o
+[ 70%] Building CXX object CMakeFiles/ninja_test.dir/src/missing_deps_test.cc.o
+[ 71%] Building CXX object CMakeFiles/ninja_test.dir/src/ninja_test.cc.o
+[ 73%] Building CXX object CMakeFiles/ninja_test.dir/src/state_test.cc.o
+[ 75%] Building CXX object CMakeFiles/ninja_test.dir/src/string_piece_util_test.cc.o
+[ 76%] Building CXX object CMakeFiles/ninja_test.dir/src/subprocess_test.cc.o
+[ 78%] Building CXX object CMakeFiles/ninja_test.dir/src/test.cc.o
+[ 79%] Building CXX object CMakeFiles/ninja_test.dir/src/util_test.cc.o
+[ 81%] Linking CXX executable ninja_test
+[ 81%] Built target ninja_test
+[ 82%] Building CXX object CMakeFiles/build_log_perftest.dir/src/build_log_perftest.cc.o
+[ 84%] Linking CXX executable build_log_perftest
+[ 84%] Built target build_log_perftest
+[ 85%] Building CXX object CMakeFiles/canon_perftest.dir/src/canon_perftest.cc.o
+[ 87%] Linking CXX executable canon_perftest
+[ 87%] Built target canon_perftest
+[ 89%] Building CXX object CMakeFiles/clparser_perftest.dir/src/clparser_perftest.cc.o
+[ 90%] Linking CXX executable clparser_perftest
+[ 90%] Built target clparser_perftest
+[ 92%] Building CXX object CMakeFiles/depfile_parser_perftest.dir/src/depfile_parser_perftest.cc.o
+[ 93%] Linking CXX executable depfile_parser_perftest
+[ 93%] Built target depfile_parser_perftest
+[ 95%] Building CXX object CMakeFiles/hash_collision_bench.dir/src/hash_collision_bench.cc.o
+[ 96%] Linking CXX executable hash_collision_bench
+[ 96%] Built target hash_collision_bench
+[ 98%] Building CXX object CMakeFiles/manifest_parser_perftest.dir/src/manifest_parser_perftest.cc.o
+[100%] Linking CXX executable manifest_parser_perftest
+[100%] Built target manifest_parser_perftest
+run code snippetVisit Manage Class to disable runnable code snippets×
+Now we tried to install SWORD as suggested in the documentation but we ran into errors as shown below:
+pavanik@Pavanis-MacBook-Pro SwordBuild % cd openmp/runtime/build 
+pavanik@Pavanis-MacBook-Pro build % cmake -G Ninja \
+ -D CMAKE_C_COMPILER=clang \
+ -D CMAKE_CXX_COMPILER=clang++ \
+ -D CMAKE_BUILD_TYPE=Release \
+ -D CMAKE_INSTALL_PREFIX:PATH=$OPENMP_INSTALL \
+ ..
+ninja -j8 -l8                             # or any number of available cores
+ninja install
+CMake Warning (dev) in CMakeLists.txt:
+  No project() command is present.  The top-level CMakeLists.txt file must
+  contain a literal, direct call to the project() command.  Add a line of
+  code such as
+
+    project(ProjectName)
+
+  near the top of the file, but after cmake_minimum_required().
+
+  CMake is pretending there is a "project(Project)" command on the first
+  line.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) in CMakeLists.txt:
+  cmake_minimum_required() should be called prior to this top-level project()
+  call.  Please see the cmake-commands(7) manual for usage documentation of
+  both commands.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Error: CMake was unable to find a build program corresponding to "Ninja".  CMAKE_MAKE_PROGRAM is not set.  You probably need to select a different build tool.
+CMake Warning (dev) in CMakeLists.txt:
+  No cmake_minimum_required command is present.  A line of code such as
+
+    cmake_minimum_required(VERSION 3.26)
+
+  should be added at the top of the file.  The version specified may be lower
+  if you wish to support older CMake versions for this project.  For more
+  information run "cmake --help-policy CMP0000".
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Configuring incomplete, errors occurred!
+zsh: command not found: ninja
+zsh: command not found: ninja
+run code snippetVisit Manage Class to disable runnable code snippets×
+The error apparently suggests that Ninja is either not present at the right path or some other related dependencies are not present or compatible. We are suspecting that, this could be either due to incorrect path of the Ninja Libraries with respect to SWORD files or incompatible cmake version as also reported earlier.
