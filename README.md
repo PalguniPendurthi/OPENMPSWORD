@@ -11,5 +11,9 @@ We already built the docker image and published it to docker hub.
 We simply followed the installation instructions step by step from the official Sword [documentation](https://github.com/PRUNERS/sword#installation).
 
 The docker image can be found [here](https://hub.docker.com/r/itsiprikshit/sword).
-The docker image can be pulled using the following command -
-`docker pull itsiprikshit/sword`
+The docker image can be pulled and used by using the following command -
+
+```
+docker pull itsiprikshit/sword
+docker run --name=sword -it itsiprikshit/sword
+```
